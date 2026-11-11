@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joseph Cleofe | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0c; --panel:#121214; --tile:#18181b; --line:#26262a; --text:#ededee; --muted:#8b8b93; --canvas:255,255,255;
+  --shadow:0 24px 60px rgba(0,0,0,.55);
+}
+html[data-theme="light"]{
+  --bg:#f5f5f2; --panel:#ffffff; --tile:#f0f0ec; --line:#e0e0da; --text:#121214; --muted:#6c6c73; --canvas:18,18,20;
+  --shadow:0 24px 50px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
+.mono,h1,h2,h3,.nav a,.label,.btn{font-family:"JetBrains Mono",ui-monospace,monospace}
+a{color:inherit;text-decoration:none}
+#bg3d{position:fixed;inset:0;z-index:0;width:100%;height:100%}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:transform .9s cubic-bezier(.76,0,.24,1)}
+#loader.done{transform:translateY(-100%)}
+#loader .jc{font:500 14px "JetBrains Mono";letter-spacing:6px;color:var(--muted)}
+#pct{font:300 clamp(64px,16vw,120px)/1 "JetBrains Mono";letter-spacing:-4px}
+#bar{width:min(260px,60vw);height:1px;background:var(--line);overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:var(--text)}
+
+/* ---------- Nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .8s cubic-bezier(.2,.9,.2,1) .3s}
+body.ready .nav{transform:none}
+.brand{font:700 15px "JetBrains Mono";letter-spacing:1px;display:flex;align-items:center;gap:10px}
+.brand b{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--text);border-radius:8px;font-size:12px;overflow:hidden}
+.brand b img{width:100%;height:100%;object-fit:cover;display:block}
+.links{display:flex;gap:4px}
+.nav a.link{position:relative;padding:8px 14px;font-size:13px;color:var(--muted);letter-spacing:.5px;transition:color .25s}
+.nav a.link::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:1px;background:var(--text);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.nav a.link:hover,.nav a.link.active{color:var(--text)}
+.nav a.link.active::after,.nav a.link:hover::after{transform:scaleX(1)}
+.tools{display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer;display:grid;place-items:center;font-size:15px;transition:background .25s,border-color .25s}
+.icon-btn:hover{border-color:var(--text)}
+.icon-btn.on{background:var(--text);color:var(--bg)}
+.burger{display:none}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--text)}
+
+/* ---------- Layout ---------- */
+main{position:relative;z-index:2;max-width:1060px;margin:0 auto;padding:0 22px}
+section{scroll-margin-top:64px}
+.sec{padding:96px 0 20px}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s cubic-bezier(.2,.9,.2,1),transform .9s cubic-bezier(.2,.9,.2,1);transition-delay:var(--d,0s)}
+.reveal.in{opacity:1;transform:none}
+
+.label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:14px;margin:34px 0 16px}
+.label::after{content:"";flex:1;height:1px;background:var(--line);transform:scaleX(0);transform-origin:left;transition:transform 1.2s cubic-bezier(.2,.9,.2,1) .2s}
+.reveal.in .label::after,.label.reveal.in::after{transform:scaleX(1)}
+.title{font:700 clamp(26px,4.5vw,38px) "JetBrains Mono";letter-spacing:-1px;margin-bottom:6px}
+.sub{color:var(--muted);margin-bottom:26px}
+.panel{background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);padding:26px;backdrop-filter:blur(8px)}
+
+/* ---------- Home ---------- */
+.home{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;min-height:100vh;padding-top:70px}
+.tag{font:500 12px "JetBrains Mono";letter-spacing:3px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:18px}
+h1{font:700 clamp(32px,5.6vw,56px)/1.08 "JetBrains Mono";letter-spacing:-2px;margin-bottom:18px}
+h1 span{color:var(--muted)}
+.lead{color:var(--muted);font-size:16px;line-height:1.75;max-width:540px;margin-bottom:22px}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);margin-bottom:24px;max-width:540px;background:color-mix(in srgb,var(--panel) 70%,transparent)}
+.facts div{padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted);min-width:0}
+.facts div:nth-child(odd){border-right:1px solid var(--line)}
+.facts div.full{grid-column:1/-1;border-right:0}
+.facts div:last-child{border-bottom:0}
+.facts b{display:block;color:var(--text);font:500 13px "JetBrains Mono";margin-top:3px;word-break:break-word}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:13px 24px;font-size:13px;letter-spacing:.5px;cursor:pointer;border:1px solid var(--line);color:var(--text);background:transparent;transition:background .3s,color .3s,border-color .3s,opacity .3s}
+.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn:hover{border-color:var(--text)}
+.btn.primary:hover{opacity:.85}
+
+/* ---------- ID badge + lace ---------- */
+.badge-wrap{position:relative;height:610px;max-width:380px;width:100%;margin:0 auto;perspective:1400px}
+.lace{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:3;pointer-events:none}
+.lace .edge{fill:none;stroke:var(--text);stroke-width:26;stroke-linecap:butt}
+.lace .fill{fill:none;stroke:var(--bg);stroke-width:22;stroke-linecap:butt}
+.lace .stitch{fill:none;stroke:var(--muted);stroke-width:21;stroke-dasharray:1.5 7;opacity:.55}
+.lace text{font:700 9px "JetBrains Mono";letter-spacing:3px;fill:var(--text)}
+.lace .metal{fill:var(--bg);stroke:var(--text);stroke-width:2}
+.lace .peg{fill:var(--text)}
+.badge{position:absolute;top:150px;left:50%;margin-left:-145px;width:290px;height:410px;transform-origin:50% 0;cursor:grab;user-select:none;-webkit-user-select:none;z-index:2;will-change:transform;touch-action:pan-y}
+.badge.drag{cursor:grabbing}
+.tilt3d{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.9,.2,1)}
+.badge.drag .tilt3d,.badge.hot .tilt3d{transition:transform .08s linear}
+.flipper{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.3,1.35,.5,1)}
+.badge.flipped .flipper{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;padding:26px 22px 22px}
+.face::before{content:"";position:absolute;left:50%;top:11px;width:54px;height:8px;border-radius:8px;margin-left:-27px;background:var(--bg);border:1px solid var(--line);z-index:2}
+.glare{position:absolute;inset:0;pointer-events:none;border-radius:18px;background:radial-gradient(circle at var(--gx,50%) var(--gy,0%),rgba(255,255,255,.22),transparent 55%);opacity:0;transition:opacity .3s;mix-blend-mode:soft-light;z-index:3}
+.badge.hot .glare,.badge.drag .glare{opacity:1}
+.front{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center}
+.photo{position:absolute;left:22px;right:22px;top:34px;bottom:118px;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+.photo img{width:100%;height:100%;object-fit:cover;pointer-events:none;transform:translateZ(30px) scale(1.04)}
+.badge h3{font-size:22px;letter-spacing:-.5px;position:relative;transform:translateZ(40px)}
+.age{margin-top:8px;font:500 12px "JetBrains Mono";letter-spacing:2px;color:var(--muted);text-transform:uppercase;position:relative;transform:translateZ(30px)}
+.back{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.qr{width:190px;height:190px;border-radius:12px;background:#fff;padding:10px;display:grid;place-items:center;transition:transform .3s;pointer-events:auto}
+.qr:hover{transform:scale(1.05)}
+.qr img{width:100%;height:100%;object-fit:contain}
+.back small{font:400 11px "JetBrains Mono";letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+
+/* ---------- About ---------- */
+.about{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:start}
+.about p{color:var(--muted);line-height:1.8;font-size:16px;margin-bottom:14px}
+.about p strong{color:var(--text);font-weight:600}
+.portrait{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;cursor:none;--x:50%;--y:50%;--r:0px}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.portrait .alt{-webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 97%,transparent 100%);mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 97%,transparent 100%)}
+.portrait .ring{position:absolute;left:var(--x);top:var(--y);width:calc(var(--r)*2);height:calc(var(--r)*2);transform:translate(-50%,-50%);border-radius:50%;border:1px solid #fff;mix-blend-mode:difference;pointer-events:none}
+
+.stack-row{display:flex;flex-wrap:wrap;gap:14px}
+.tech{width:80px;text-align:center;font:400 12px "JetBrains Mono";color:var(--muted);letter-spacing:.5px}
+.tech i{display:grid;place-items:center;width:80px;height:80px;margin-bottom:10px;background:var(--tile);border:1px solid var(--line);font-style:normal;font:700 17px "JetBrains Mono";color:var(--text);transition:transform .3s,border-color .3s}
+.tech:hover i{transform:translateY(-4px);border-color:var(--text)}
+
+.tl{position:relative;padding-left:44px}
+.tl::before{content:"";position:absolute;left:11px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.tl-item{position:relative;display:flex;justify-content:space-between;gap:16px;padding-bottom:26px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:"";position:absolute;left:-44px;top:2px;width:22px;height:22px;border-radius:50%;background:var(--bg);border:2px solid var(--line)}
+.tl-item.now::before{background:var(--text);border-color:var(--text);box-shadow:0 0 0 6px rgba(var(--canvas),.12)}
+.tl-item b{display:block;font:600 16px "JetBrains Mono"}
+.tl-item span{display:block;color:var(--muted);margin-top:4px;font:400 14px/1.5 "JetBrains Mono"}
+.tl-item time{font:400 14px "JetBrains Mono";color:var(--muted);white-space:nowrap}
+.tl-item.now time{color:var(--text)}
+
+/* ---------- Work ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;perspective:1000px}
+.proj{padding:26px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(8px);transform-style:preserve-3d}
+.proj.in{transition:transform .25s,border-color .3s,opacity .9s}
+.proj:hover{border-color:var(--text)}
+.proj h3{font-size:18px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.status{font:500 10px "JetBrains Mono";letter-spacing:1px;text-transform:uppercase;padding:4px 8px;border:1px solid var(--text);border-radius:4px}
+.status.sample{border-color:var(--line);color:var(--muted)}
+.proj p{color:var(--muted);line-height:1.7;margin-bottom:16px;font-size:14px}
+.proj.dim.in{opacity:.65}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:4px 9px;border:1px solid var(--line);font:400 11px "JetBrains Mono";color:var(--muted)}
+
+/* ---------- Contact ---------- */
+.rows{display:grid;gap:12px}
+.row{display:flex;align-items:center;gap:16px;padding:20px 22px;background:var(--tile);border:1px solid var(--line);cursor:pointer;transition:border-color .3s,transform .3s}
+.row:hover{border-color:var(--text);transform:translateX(4px)}
+.row .ic{width:28px;height:28px;display:grid;place-items:center;font:700 13px "JetBrains Mono";flex:none}
+.row svg{width:24px;height:24px;stroke:var(--text);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.row .tx{flex:1;min-width:0}
+.row .tx b{display:block;font:500 16px "JetBrains Mono"}
+.row .tx small{display:block;color:var(--muted);font:400 13px "JetBrains Mono";margin-top:3px;word-break:break-all}
+.row .go{color:var(--muted);font-size:18px;transition:transform .3s,color .3s}
+.row:hover .go{transform:translate(3px,-3px);color:var(--text)}
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,120px);padding:12px 20px;background:var(--text);color:var(--bg);font:500 13px "JetBrains Mono";z-index:90;transition:transform .4s cubic-bezier(.2,.9,.2,1)}
+.toast.show{transform:translate(-50%,0)}
+footer{position:relative;z-index:2;text-align:center;color:var(--muted);font:400 12px "JetBrains Mono";padding:26px;margin:60px auto 0;max-width:1060px;border-top:1px solid var(--line)}
+
+@media(max-width:820px){
+  .home,.about{grid-template-columns:1fr}
+  .home{gap:20px;padding-top:90px}
+  .burger{display:grid}
+  .nav{flex-wrap:wrap}
+  .links{display:none;width:100%;flex-direction:column;order:5}
+  .nav.open .links{display:flex}
+  .portrait{cursor:crosshair}
+  .tl-item{flex-direction:column;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<canvas id="bg3d"></canvas>
+
+<div id="loader">
+  <div class="jc">JOSEPH CLEOFE</div>
+  <div id="pct">0%</div>
+  <div id="bar"><i></i></div>
+</div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="#home"><b><img src="profile.png" alt="Joseph Cleofe" onerror="this.replaceWith(document.createTextNode('JC'))"></b>Sep's Portfolio</a>
+  <div class="links">
+    <a class="link active" href="#home">Home</a>
+    <a class="link" href="#about">About</a>
+    <a class="link" href="#work">Work</a>
+    <a class="link" href="#contact">Contact</a>
+  </div>
+  <div class="tools">
+    <button class="icon-btn" id="music" title="Music" aria-label="Toggle music">&#9835;</button>
+    <button class="icon-btn" id="theme" title="Theme" aria-label="Toggle theme">&#9728;</button>
+    <button class="icon-btn burger" id="burger" aria-label="Menu">&#9776;</button>
+  </div>
+  <span class="progress" id="progress"></span>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="home">
+      <div>
+        <span class="tag reveal">Web developer &middot; Philippines</span>
+        <h1 class="reveal" style="--d:.08s">Hi, I'm Joseph. I build web apps that <span>people can use.</span></h1>
+        <p class="lead reveal" style="--d:.16s">I'm a 17-year-old web developer. I build sign-in, dashboards, data and file uploads with HTML, CSS, JavaScript and Java, on Firebase and MySQL. Right now I'm building a Lost and Found web app, one working piece at a time.</p>
+        <div class="facts reveal" style="--d:.24s">
+          <div>Role<b>Web Developer</b></div>
+          <div>Age<b>17 yrs old</b></div>
+          <div>Access<b>All projects</b></div>
+          <div>Issued<b>Nov 2026</b></div>
+          <div>ID no.<b>2026-1111</b></div>
+          <div>School<b>Moreno Integrated School</b></div>
+          <div class="full">Work with<b>HTML &middot; CSS &middot; JS &middot; JAVA &middot; FIREBASE &middot; MYSQL</b></div>
+          <div class="full">Email<b>josephcleofe30@gmail.com</b></div>
+        </div>
+        <div class="cta reveal" style="--d:.32s">
+          <a class="btn primary" href="#work">View my work</a>
+          <a class="btn" href="#contact">Contact me</a>
+        </div>
+      </div>
+
+      <div class="badge-wrap reveal" id="badgeWrap" style="--d:.2s">
+        <svg class="lace" id="lace" aria-hidden="true">
+          <path id="lacePath" d="M0 0" style="display:none"/>
+          <path class="edge" id="laceEdge" d="M0 0"/>
+          <path class="fill" id="laceFill" d="M0 0"/>
+          <path class="stitch" id="laceStitch" d="M0 0"/>
+          <text><textPath id="laceText" href="#lacePath" startOffset="2">JC &#183; PORTFOLIO PASS 2026 &#183; JC &#183; PORTFOLIO PASS 2026 &#183; JC &#183; PORTFOLIO PASS 2026 &#183; JC &#183; PORTFOLIO PASS 2026 &#183; JC &#183; PORTFOLIO PASS 2026 &#183; JC &#183; PORTFOLIO PASS 2026</textPath></text>
+          <circle class="peg" id="lacePeg" r="6"/>
+          <circle class="metal" id="laceRing" r="8"/>
+        </svg>
+        <div class="badge" id="badge">
+          <div class="tilt3d" id="tilt3d">
+            <div class="flipper">
+              <div class="face front">
+                <div class="photo"><img src="profile.png" alt="Joseph Cleofe" onerror="this.replaceWith(Object.assign(document.createElement('b'),{textContent:'profile.png',style:'font:400 12px JetBrains Mono;color:#888'}))"></div>
+                <h3>Joseph Cleofe</h3>
+                <div class="age">17 years old</div>
+                <div class="glare"></div>
+              </div>
+              <div class="face back">
+                <small>Scan for my Facebook</small>
+                <a class="qr" href="https://www.facebook.com/YOUR.FACEBOOK.USERNAME" target="_blank" rel="noopener">
+                  <img src="qr.png" alt="QR code to Joseph's Facebook" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'qr.png',style:'color:#444;font:500 13px JetBrains Mono'}))">
+                </a>
+                <small>JC &middot; 2026 &middot; 1111</small>
+                <div class="glare"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="sec">
+    <h2 class="title reveal">About</h2>
+    <div class="about">
+      <div class="portrait reveal" id="portrait">
+        <img src="portrait.png" alt="Joseph Cleofe portrait" onerror="this.style.display='none'">
+        <img class="alt" src="batman.png" alt="Joseph, Batman version" onerror="this.style.display='none'">
+        <div class="ring"></div>
+      </div>
+      <div>
+        <p class="reveal" style="--d:.1s">I build websites and web apps with <strong>HTML, CSS and JavaScript</strong>, using <strong>Firebase</strong> Authentication, Firestore and Storage for accounts, records and images, and <strong>Java with MySQL</strong> when a project needs a classic back end.</p>
+        <p class="reveal" style="--d:.2s">I add features in small steps so each one works before the next goes on top. I like projects with two sides: the screen a regular person uses and the dashboard someone else uses to manage it.</p>
+      </div>
+    </div>
+
+    <div class="label reveal">Tech stack</div>
+    <div class="panel reveal">
+      <div class="label" style="margin-top:0">Frontend</div>
+      <div class="stack-row">
+        <div class="tech"><i>HT</i>HTML</div>
+        <div class="tech"><i>CS</i>CSS</div>
+        <div class="tech"><i>JS</i>JS</div>
+      </div>
+      <div class="label">Backend</div>
+      <div class="stack-row">
+        <div class="tech"><i>JV</i>JAVA</div>
+        <div class="tech"><i>SQ</i>MYSQL</div>
+        <div class="tech"><i>FB</i>FIREBASE</div>
+      </div>
+      <div class="label">Firebase services</div>
+      <div class="stack-row">
+        <div class="tech"><i>AU</i>AUTH</div>
+        <div class="tech"><i>FS</i>FIRESTORE</div>
+        <div class="tech"><i>ST</i>STORAGE</div>
+      </div>
+    </div>
+
+    <div class="label reveal">Education</div>
+    <div class="panel reveal">
+      <div class="tl">
+        <div class="tl-item now"><div><b>Senior High School - ICT</b><span>Moreno Integrated School</span></div><time>Present</time></div>
+        <div class="tl-item"><div><b>Junior High School - STE</b><span>Moreno Integrated School</span></div><time>Completed</time></div>
+        <div class="tl-item"><div><b>Elementary</b><span>Bagasbas Elementary School</span></div><time>Completed</time></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="sec">
+    <h2 class="title reveal">Selected work</h2>
+    <p class="sub reveal">One working piece at a time.</p>
+    <div class="grid">
+      <article class="proj reveal tilt">
+        <h3>Lost and Found <span class="status">In progress</span></h3>
+        <p>A web app for reporting and recovering lost items, with a user dashboard for posting and searching and an admin dashboard for reviewing and managing reports.</p>
+        <div class="chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">Firebase Auth</span><span class="chip">Firestore</span><span class="chip">Storage</span></div>
+      </article>
+      <article class="proj reveal tilt dim" style="--d:.1s">
+        <h3>Your next project <span class="status sample">Sample</span></h3>
+        <p>Placeholder entry. Replace this with a project name, a sentence on what it does and the tools you used.</p>
+        <div class="chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span></div>
+      </article>
+      <article class="proj reveal tilt dim" style="--d:.2s">
+        <h3>Another project <span class="status sample">Sample</span></h3>
+        <p>Placeholder entry. Add a link to the live site or the code when you have one.</p>
+        <div class="chips"><span class="chip">Firebase</span><span class="chip">JavaScript</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="sec">
+    <h2 class="title reveal">Contact</h2>
+    <p class="sub reveal">Open to freelance work, full-time roles and collaborations.</p>
+
+    <div class="panel reveal">
+      <div class="label" style="margin-top:0">Find me on</div>
+      <div class="rows">
+        <a class="row" href="https://www.facebook.com/YOUR.FACEBOOK.USERNAME" target="_blank" rel="noopener"><span class="ic">f</span><span class="tx"><b>Facebook</b></span><span class="go">&#8599;</span></a>
+        <a class="row" href="https://www.instagram.com/_hpes0j" target="_blank" rel="noopener"><span class="ic">ig</span><span class="tx"><b>Instagram</b><small>_hpes0j</small></span><span class="go">&#8599;</span></a>
+        <div class="row" id="discord" role="button" tabindex="0"><span class="ic">dc</span><span class="tx"><b>Discord</b><small>sephyr_1</small></span><span class="go">&#8599;</span></div>
+      </div>
+
+      <div class="label">Get in touch</div>
+      <div class="rows">
+        <a class="row" href="mailto:josephcleofe30@gmail.com"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="tx"><b>Email</b><small>josephcleofe30@gmail.com</small></span><span class="go">&#8599;</span></a>
+        <a class="row" href="tel:+639100154609"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg></span><span class="tx"><b>Reach me</b><small>09100154609</small></span><span class="go">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>&copy; Joseph Cleofe &middot; Portfolio 2026</footer>
+<div class="toast" id="toast"></div>
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var root=document.documentElement, body=document.body;
+
+  /* ---------- Loader: 0 to 100% in 2 seconds ---------- */
+  (function(){
+    var pct=$('#pct'), bar=$('#bar i'), start=null, D=2000;
+    function step(t){
+      if(start===null) start=t;
+      var p=Math.min(1,(t-start)/D), e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      pct.textContent=Math.round(e*100)+'%'; bar.style.width=(e*100)+'%';
+      if(p<1) requestAnimationFrame(step);
+      else setTimeout(function(){ $('#loader').classList.add('done'); setTimeout(function(){body.classList.add('ready');initReveal();dropBadge();},350); },150);
+    }
+    requestAnimationFrame(step);
+  })();
+
+  /* ---------- Scroll reveal ---------- */
+  function initReveal(){
+    var els=$$('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    els.forEach(function(e){io.observe(e)});
+  }
+
+  /* ---------- Theme ---------- */
+  try{var t=localStorage.getItem('jc-theme'); if(t) root.setAttribute('data-theme',t);}catch(e){}
+  function setThemeIcon(){ $('#theme').innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9728;' : '&#9790;'; }
+  setThemeIcon();
+  $('#theme').addEventListener('click',function(){
+    var n=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem('jc-theme',n)}catch(e){}
+    setThemeIcon(); readColor();
+  });
+
+  var toastT;
+  function toast(m){var el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},2200);}
+
+  /* ---------- Music: starts on the first interaction ---------- */
+  var bgm=$('#bgm'), musicBtn=$('#music'), musicOn=false, userMuted=false, trying=false;
+  bgm.volume=.4;
+  var evts=['pointerdown','click','touchstart','touchend','keydown','wheel','scroll','mousemove'];
+  function tryPlay(){
+    if(musicOn||userMuted||trying) return; trying=true;
+    var pr=bgm.play();
+    if(pr&&pr.then){pr.then(function(){musicOn=true;trying=false;musicBtn.classList.add('on');evts.forEach(function(n){window.removeEventListener(n,tryPlay,true)});})
+      .catch(function(){trying=false;});}
+    else trying=false;
+  }
+  evts.forEach(function(n){window.addEventListener(n,tryPlay,{capture:true,passive:true});});
+  musicBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    if(musicOn){bgm.pause();musicOn=false;userMuted=true;musicBtn.classList.remove('on');}
+    else{userMuted=false;bgm.play().then(function(){musicOn=true;musicBtn.classList.add('on')}).catch(function(){});}
+  });
+
+  /* ---------- Nav: smooth scroll, scroll-spy, progress ---------- */
+  $('#burger').addEventListener('click',function(){$('#nav').classList.toggle('open')});
+  $$('.nav a[href^="#"]').forEach(function(a){a.addEventListener('click',function(){$('#nav').classList.remove('open')})});
+  var secs=['home','about','work','contact'].map(function(id){return document.getElementById(id)});
+  var links=$$('.nav a.link'), prog=$('#progress');
+  function spy(){
+    var y=window.scrollY+window.innerHeight*.35, cur=0;
+    secs.forEach(function(s,i){if(s.offsetTop<=y)cur=i;});
+    links.forEach(function(a,i){a.classList.toggle('active',i===cur)});
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(h>0?window.scrollY/h*100:0)+'%';
+  }
+  window.addEventListener('scroll',spy,{passive:true}); window.addEventListener('resize',spy); spy();
+
+  /* ---------- ID badge: hanging lace, swing, tilt, flip ---------- */
+  var dropBadge=function(){};
+  (function(){
+    var wrap=$('#badgeWrap'), badge=$('#badge'), tilt=$('#tilt3d');
+    var lp=$('#lacePath'), le=$('#laceEdge'), lf=$('#laceFill'), ls=$('#laceStitch'), peg=$('#lacePeg'), ring=$('#laceRing');
+    var REST_TOP=150, AY=14;
+    var x=0,y=-120,vx=0,vy=0,dragging=false,sx,sy,moved=0,raf=null,lastX=0,lastY=0;
+    function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+    function render(){
+      var W=wrap.clientWidth, ax=W/2, ex=ax+x, ey=Math.max(AY+50,REST_TOP+y);
+      var rot=clamp(x*.09+vx*.7,-24,24);
+      badge.style.transform='translate('+x+'px,'+y+'px) rotate('+rot+'deg)';
+      // lace follows the badge as a smooth curve, no scaling, so it never stretches
+      var cxm=(ax+ex)/2-(ex-ax)*.12, cym=(AY+ey)/2+8;
+      var d='M'+ax+' '+AY+' Q'+cxm+' '+cym+' '+ex+' '+ey;
+      [lp,le,lf,ls].forEach(function(p){p.setAttribute('d',d)});
+      peg.setAttribute('cx',ax);peg.setAttribute('cy',AY);
+      ring.setAttribute('cx',ex);ring.setAttribute('cy',ey);
+    }
+    function tick(){
+      if(!dragging){
+        vx+=(-x)*.07; vy+=(-y)*.07; vx*=.88; vy*=.88; x+=vx; y+=vy;
+        if(Math.abs(x)<.1&&Math.abs(y)<.1&&Math.abs(vx)<.1&&Math.abs(vy)<.1){x=y=vx=vy=0;render();raf=null;return;}
+      }
+      render(); raf=requestAnimationFrame(tick);
+    }
+    function start(){ if(!raf) raf=requestAnimationFrame(tick); }
+    dropBadge=function(){ y=-120; start(); };
+    render();
+
+    // tilt + glare
+    function setTilt(e){
+      var b=badge.getBoundingClientRect(), px=(e.clientX-b.left)/b.width, py=(e.clientY-b.top)/b.height;
+      tilt.style.transform='rotateX('+((.5-py)*22)+'deg) rotateY('+((px-.5)*22)+'deg)';
+      badge.style.setProperty('--gx',(px*100)+'%'); badge.style.setProperty('--gy',(py*100)+'%');
+    }
+    badge.addEventListener('pointerenter',function(){badge.classList.add('hot')});
+    badge.addEventListener('pointermove',function(e){ if(!dragging) setTilt(e); });
+    badge.addEventListener('pointerleave',function(){ if(dragging) return; badge.classList.remove('hot'); tilt.style.transform=''; });
+
+    // drag + flip
+    badge.addEventListener('pointerdown',function(e){
+      if(e.target.closest('a')) return;
+      dragging=true;moved=0;sx=e.clientX-x;sy=e.clientY-y;lastX=x;lastY=y;
+      badge.setPointerCapture(e.pointerId);badge.classList.add('drag');start();
+    });
+    badge.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      var nx=clamp(e.clientX-sx,-150,150), ny=clamp(e.clientY-sy,-30,130);
+      moved+=Math.abs(nx-x)+Math.abs(ny-y);
+      vx=(nx-lastX)*.5; vy=(ny-lastY)*.5; lastX=nx; lastY=ny; x=nx; y=ny;
+      setTilt(e);
+    });
+    function end(){
+      if(!dragging) return; dragging=false; badge.classList.remove('drag');
+      if(moved<6) badge.classList.toggle('flipped');
+      tilt.style.transform=''; badge.classList.remove('hot');
+      start();
+    }
+    badge.addEventListener('pointerup',end); badge.addEventListener('pointercancel',end);
+    window.addEventListener('resize',render);
+  })();
+
+  /* ---------- Hover reveal portrait ---------- */
+  (function(){
+    var p=$('#portrait'), target=0, r=0, anim;
+    function loop(){ r+=(target-r)*.18; p.style.setProperty('--r',r.toFixed(1)+'px'); if(Math.abs(target-r)>.5) anim=requestAnimationFrame(loop); else {r=target;p.style.setProperty('--r',r+'px');anim=null;} }
+    function setR(v){target=v; if(!anim) anim=requestAnimationFrame(loop);}
+    function move(e){var b=p.getBoundingClientRect();p.style.setProperty('--x',(e.clientX-b.left)+'px');p.style.setProperty('--y',(e.clientY-b.top)+'px');}
+    var size=function(){return Math.max(70,p.clientWidth*.22)};
+    p.addEventListener('pointerenter',function(e){move(e);setR(size());});
+    p.addEventListener('pointermove',move);
+    p.addEventListener('pointerleave',function(){setR(0)});
+    p.addEventListener('pointerdown',function(e){move(e);setR(size());});
+  })();
+
+  /* ---------- Subtle tilt on project cards ---------- */
+  $$('.tilt').forEach(function(c){
+    c.addEventListener('pointermove',function(e){
+      var b=c.getBoundingClientRect(), px=(e.clientX-b.left)/b.width-.5, py=(e.clientY-b.top)/b.height-.5;
+      c.style.transform='rotateY('+(px*8)+'deg) rotateX('+(-py*8)+'deg) translateY(-4px)';
+    });
+    c.addEventListener('pointerleave',function(){c.style.transform=''});
+  });
+
+  /* ---------- Discord copy ---------- */
+  var dc=$('#discord');
+  function copyDiscord(){
+    var v='sephyr_1';
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(v).then(function(){toast('Copied: '+v)},function(){toast('Discord: '+v)});}
+    else toast('Discord: '+v);
+  }
+  dc.addEventListener('click',copyDiscord);
+  dc.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();copyDiscord();}});
+
+  /* ---------- 3D background: quiet monochrome particles + wireframes ---------- */
+  var cv=$('#bg3d'), cx=cv.getContext('2d'), W,H,DPR=Math.min(2,window.devicePixelRatio||1), col='255,255,255';
+  function readColor(){col=getComputedStyle(root).getPropertyValue('--canvas').trim()||col;}
+  readColor();
+  function resize(){W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);}
+  resize(); addEventListener('resize',resize);
+  var N=innerWidth<700?55:100, pts=[];
+  for(var i=0;i<N;i++) pts.push({x:(Math.random()-.5)*900,y:(Math.random()-.5)*900,z:(Math.random()-.5)*900,s:Math.random()*1.2+.5});
+  function cube(size,ox,oy,oz){var v=[];for(var a=-1;a<=1;a+=2)for(var b=-1;b<=1;b+=2)for(var c=-1;c<=1;c+=2)v.push({x:a*size+ox,y:b*size+oy,z:c*size+oz});return v;}
+  var cubes=[cube(110,-320,-120,0),cube(60,360,140,-80)];
+  var edges=[];for(var i=0;i<8;i++)for(var j=i+1;j<8;j++){var d=(i^j);if(d===1||d===2||d===4)edges.push([i,j]);}
+  var mx=0,my=0,rx=0,ry=0,sc=0;
+  addEventListener('pointermove',function(e){mx=(e.clientX/W-.5);my=(e.clientY/H-.5);});
+  function proj(p,ax,ay){
+    var cy=Math.cos(ay),sy=Math.sin(ay),cxr=Math.cos(ax),sxr=Math.sin(ax);
+    var x=p.x*cy-p.z*sy, z=p.x*sy+p.z*cy, y=p.y*cxr-z*sxr; z=p.y*sxr+z*cxr;
+    var f=700/(700+z+500); return {x:W/2+x*f,y:H/2+y*f,f:f};
+  }
+  function draw(t){
+    cx.clearRect(0,0,W,H);
+    var tgt=window.scrollY*.0012; sc+=(tgt-sc)*.05; // background turns as you scroll
+    ry+=(mx*.7+sc-ry)*.02+.0010; rx+=(my*.5-rx)*.03;
+    var P=pts.map(function(p){return proj(p,rx,ry)});
+    for(var i=0;i<P.length;i++){
+      var a=P[i];
+      for(var j=i+1;j<P.length;j++){
+        var b=P[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
+        if(d<8000){cx.strokeStyle='rgba('+col+','+(.14*(1-d/8000)*Math.min(a.f,b.f)*1.4)+')';cx.lineWidth=.7;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}
+      }
+    }
+    for(var i=0;i<P.length;i++){var q=P[i];cx.fillStyle='rgba('+col+','+Math.min(.55,q.f*.5)+')';cx.beginPath();cx.arc(q.x,q.y,pts[i].s*q.f*1.4,0,6.283);cx.fill();}
+    cubes.forEach(function(cb,k){
+      var pr=cb.map(function(p){return proj(p,rx+t*.00025*(k+1),ry+t*.00035)});
+      cx.strokeStyle='rgba('+col+',.2)';cx.lineWidth=1;cx.beginPath();
+      edges.forEach(function(e){cx.moveTo(pr[e[0]].x,pr[e[0]].y);cx.lineTo(pr[e[1]].x,pr[e[1]].y);});cx.stroke();
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
